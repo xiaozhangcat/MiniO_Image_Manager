@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MinIO Image Manager</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .image-list {
+            margin-bottom: 20px;
+        }
+        .image-item {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>MinIO Image Manager</h1>
+
+<h2>Image List</h2>
+<div class="image-list" id="image-list">
+    <!-- 图片列表将被填充在这里 -->
+</div>
+
+<h2>Rename Image</h2>
+<label for="oldImageName">Old Image Name:</label>
+<input type="text" id="oldImageName" placeholder="Enter old image name"/>
+<br/>
+<label for="newImageName">New Image Name:</label>
+<input type="text" id="newImageName" placeholder="Enter new image name"/>
+<br/>
+<button id="rename-button">Rename Image</button>
+
+<!-- 显示结果或错误 -->
+<div id="result-message" style="color: green; margin-top: 20px;"></div>
+<div id="error-message" style="color: red; margin-top: 20px;"></div>
+
+<script>
+    const apiUrl = 'http:/127.0.0.1:5000/api'; // 替换为实际 API URL
+
+    // 获取图片列表
+    async function fetchImages() {
+        const response = await fetch(`${apiUrl}/images`);
+        if (!response.ok) {
+            const error = await response.json();
+            document.getElementById('error-message').innerText = error.error;
+            return;
+        }
+        const images = await response.json();
+        const imageListDiv = document.getElementById('image-list');
+        imageListDiv.innerHTML = ''; // 清空列表
+
+        images.forEach(image => {
+            const imageElement = document.createElement('div');
+            imageElement.classList.add('image-item');
+            imageElement.innerText = image;
+            imageListDiv.appendChild(imageElement);
+        });
+    }
+
+    // 重命名图片
+    async function renameImage() {
+        const oldImageName = document.getElementById('oldImageName').value;
+        const newImageName = document.getElementById('newImageName').value;
+
+        const response = await fetch(`${apiUrl}/image/rename/${oldImageName}/${newImageName}`, {
+            method: 'PUT'
+        });
+
+        const messageDiv = document.getElementById('result-message');
+        const errorDiv = document.getElementById('error-message');
+
+        if (response.ok) {
+            messageDiv.innerText = `Image renamed from '${oldImageName}' to '${newImageName}'.`;
+            errorDiv.innerText = '';
+            fetchImages(); // 刷新图片列表
+        } else {
+            const error = await response.json();
+            errorDiv.innerText = error.error;
+            messageDiv.innerText = '';
+        }
+    }
+
+    // 添加事件监听器
+    document.getElementById('rename-button').addEventListener('click', renameImage);
+
+    // 页面加载时获取图片列表
+    window.onload = fetchImages;
+
+</script>
+
+</body>
+</html>
