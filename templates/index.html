@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MinIO Image Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+</head>
+<body>
+
+<h1>MiniO Image Manager</h1>
+<h2>Specify Bucket Name</h2>
+<input type="text" id="bucket-name" placeholder="Enter Bucket Name" />
+<button id="submit-bucket">Submit</button>
+<h2>Image List</h2>
+<div class="image-list" id="image-list">
+    <!-- 图片列表将被填充在这里 -->
+</div>
+
+<h2>Rename Image</h2>
+<label for="oldImageName">Old Image Name:</label>
+<input type="text" id="oldImageName" placeholder="Enter old image name"/>
+<br/>
+<label for="newImageName">New Image Name:</label>
+<input type="text" id="newImageName" placeholder="Enter new image name"/>
+<br/>
+<button id="rename-button">Rename Image</button>
+
+<!-- 显示结果或错误 -->
+<div id="result-message" style="color: green; margin-top: 20px;"></div>
+<div id="error-message" style="color: red; margin-top: 20px;"></div>
+
+<script src="{{ url_for('static', filename='tool.js') }}"></script>
+<script src="{{ url_for('static', filename='main.js') }}"></script>
+
+
+</body>
+</html>
